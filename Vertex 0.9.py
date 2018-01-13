@@ -327,6 +327,7 @@ def leaderboardFunc(mode,name):
     while keepLeaderboarding:
         gameDisplay.fill(black)
         blitMessage("L E A D E R B O A R D",green,purple,display_size/2,display_size*0.05,72)
+        blitMessage("PRESS L AGAIN TO CLOSE",green,purple,display_size/2,display_size*0.935,36)
         y_pos=160
         count=1
         while not printed:
