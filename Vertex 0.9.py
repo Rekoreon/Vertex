@@ -188,11 +188,11 @@ def titleScreen():
                     elif key =="\x08":
                         name = name[0:-1]
                         key = ""
-                    if len(name) <12:
+                    if len(name) <10:
                         name+=key
  
             gameDisplay.fill(black)
-            blitMessage("Please enter a username (Max 12 Characters):",green,purple,display_size/2,display_size*0.45,36)
+            blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_size/2,display_size*0.45,36)
 
             blitMessage(name,white,purple,display_size/2,display_size/2,36)
             pygame.display.update()
