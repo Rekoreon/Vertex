@@ -59,10 +59,10 @@ def coord_maker(flash_num,flash_left,flash_left_red,flash_left_blue,block_size):
     top_coords = [display_size/2-block_size/2, 0]
     right_coords = [display_size-block_size, display_size/2-block_size/2]
     bottom_coords = [display_size/2-block_size/2, display_size-block_size]
-    flash_left_coords = [0, display_size/2-50]
-    flash_top_coords = [display_size/2-50, 0]
-    flash_right_coords = [display_size-100, display_size/2-50]
-    flash_bottom_coords = [display_size/2-50, display_size-100]
+    flash_left_coords = [0, display_size/2-150]
+    flash_top_coords = [display_size/2-150, 0]
+    flash_right_coords = [display_size-150, display_size/2-150]
+    flash_bottom_coords = [display_size/2-150, display_size-150]
     death_coords = []
     if flash_num == 1:
         flash = flash_left
@@ -141,7 +141,10 @@ def writeToFile(name,score,written,mode):
 
     
     for i in leaderboard:
-        if name == i[0] and score >= int(i[1]) and not written:
+        if name == i[0] and score < int(i[1]):
+            written = True
+            
+        elif name == i[0] and score >= int(i[1]) and not written:
             leaderboard[count] = [name,score]
             written = True
             
@@ -150,11 +153,10 @@ def writeToFile(name,score,written,mode):
             written = True
             leaderboard = leaderboard[0:-1]
             
-        elif name == i[0] and score < int(i[1]):
-            written = True
 
 
         count+=1
+        
     if mode == "normal":
         file = open("leaderboardNormal.txt","w")
     elif mode == "mixed":
@@ -198,7 +200,7 @@ def titleScreen():
             pygame.display.update()
         gameDisplay.fill(black)
         blitMessage("V E R T E X".format(name),green,purple,display_size/2,display_size*0.1,144)
-        blitMessage("Welcome, {0}!".format(name),green,purple,display_size/2,display_size*0.32,54)
+        blitMessage("Welcome, {0}!".format(name),white,purple,display_size/2,display_size*0.32,54)
         blitMessage("PRESS 1 TO PLAY NORMAL MODE",green,purple,display_size/2,display_size*0.45,48)
         blitMessage("PRESS 2 TO PLAY MIXED MODE ",green,purple,display_size/2,display_size*0.55,48)
         blitMessage("PRESS L TO VIEW LEADERBOARD",green,purple,display_size/2,display_size*0.65,48)
@@ -232,7 +234,7 @@ def gameLoop(mode,name):
     while gameLoopBool:
         if reset:
             flash_num = flash_num_creator(0,mode)
-            life_drain=3
+            life_drain=0
             score = 0
             msg = "Score = %s" %score
             lead_x = ((display_size/2)-(block_size/2))
@@ -273,7 +275,9 @@ def gameLoop(mode,name):
             flash_num = flash_num_creator(flash_num,mode)
             score = score + 1
             msg = "Score = %s" %score
-            if life_drain < 12 and score%10 == 0:
+            if life_drain == 0:
+                life_drain = 3
+            elif life_drain < 12 and life_drain > 0 and score%10 == 0:
                 life_drain += 0.9
             lead_x, lead_y, lead_x_change, lead_y_change, lead_x_life = resetPos(block_size)
         elif lead_x_life <= (-display_size/2) and flash_num <9:
@@ -287,11 +291,11 @@ def gameLoop(mode,name):
                 written = writeToFile(name,score,written,mode)
             gameDisplay.fill(black)
             blitMessage("GAME OVER",red,cyan,display_size/2,display_size*0.1,108)
-            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,blue,display_size/2,display_size*0.32,36)
-            blitMessage("PRESS P TO PLAY AGAIN",green,purple,display_size/2,display_size*0.45,48)
-            blitMessage("PRESS M TO FOR MAIN MENU",green,purple,display_size/2,display_size*0.55,48)
-            blitMessage("PRESS L TO VIEW LEADERBOARD",green,purple,display_size/2,display_size*0.65,48)
-            blitMessage("Thank you for playing!",green,purple,display_size/2,display_size*0.8125,36)
+            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.32,36)
+            blitMessage("PRESS P TO PLAY AGAIN",red,cyan,display_size/2,display_size*0.45,48)
+            blitMessage("PRESS M TO FOR MAIN MENU",red,cyan,display_size/2,display_size*0.55,48)
+            blitMessage("PRESS L TO VIEW LEADERBOARD",red,cyan,display_size/2,display_size*0.65,48)
+            blitMessage("Thank you for playing!",white,purple,display_size/2,display_size*0.8125,36)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -328,7 +332,7 @@ def leaderboardFunc(mode,name):
         gameDisplay.fill(black)
         blitMessage("L E A D E R B O A R D",green,purple,display_size/2,display_size*0.05,72)
         blitMessage("PRESS L AGAIN TO CLOSE",green,purple,display_size/2,display_size*0.935,36)
-        y_pos=160
+        y_pos=display_size*0.25
         count=1
         while not printed:
             if leaderboardMode == "normal":
