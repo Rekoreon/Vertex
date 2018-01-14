@@ -54,7 +54,7 @@ def flash_num_creator(flash_num,mode):
     flash_num = random.choice(flash_nums)
     return flash_num
 
-def coord_maker(flash_num,flash_left,flash_left_red,flash_left_blue,block_size):
+def coord_maker(flash_num,flash_left,flash_left_red,block_size):
     left_coords = [0, display_size/2-block_size/2]
     top_coords = [display_size/2-block_size/2, 0]
     right_coords = [display_size-block_size, display_size/2-block_size/2]
@@ -225,8 +225,9 @@ def gameLoop(mode,name):
     diamond = pygame.image.load("diamond.png")
     flash_left = pygame.image.load("flash_left.png")
     flash_left_red = pygame.image.load("flash_left_red.png")
-    flash_left_blue = pygame.image.load("flash_left_blue.png")
     lifeBar = pygame.image.load("lifeBar.png")
+    sound = pygame.mixer.Sound("normal-hitfinish.wav")
+    section_pass = pygame.mixer.Sound("sectionpass.mp3")
     block_size = diamond.get_height()
     gameOver = False
     gameLoopBool = True
@@ -267,17 +268,19 @@ def gameLoop(mode,name):
         lead_y += lead_y_change
         lead_x_life -= life_drain
         
-        flash, flash_coords, point_coords, death_coords = coord_maker(flash_num,flash_left,flash_left_red,flash_left_blue,block_size)
+        flash, flash_coords, point_coords, death_coords = coord_maker(flash_num,flash_left,flash_left_red,block_size)
         
         draw_stuff(board,flash,flash_coords,diamond,lead_x,lead_y,white,red,lead_x_life,msg,block_size,lifeBar)
         
         if lead_x == point_coords[0] and lead_y == point_coords[1] and flash_num<9 or flash_num > 8 and lead_x_life<=(-display_size/2):
+            sound.play()
             flash_num = flash_num_creator(flash_num,mode)
             score = score + 1
             msg = "Score = %s" %score
             if life_drain == 0:
                 life_drain = 3
             elif life_drain < 12 and life_drain > 0 and score%10 == 0:
+                section_pass.play()
                 life_drain += 0.9
             lead_x, lead_y, lead_x_change, lead_y_change, lead_x_life = resetPos(block_size)
         elif lead_x_life <= (-display_size/2) and flash_num <9:
@@ -384,6 +387,7 @@ def leaderboardFunc(mode,name):
                  elif event.key == pygame.K_l:
                      keepLeaderboarding = False
 
+pygame.mixer.init()
 
 titleScreen()
 pygame.quit()
