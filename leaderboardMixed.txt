@@ -3,8 +3,8 @@ Joe,50
 Joe,41
 Pooo,32
 Pop,28
+Joe,24
 Forkknife,21
 Joe,18
 1,14
 Helen,13
-Pooo Poooo,6

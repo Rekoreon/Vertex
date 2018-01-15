@@ -1,10 +1,10 @@
 Joe,124
+Joe,118
 Gregor,117
 Joe,96
-1,75
-Fitzy,36
-Co,32
-Pooo,32
-Helen,30
-Sergio,29
-Mark,27
+Joe,80
+Joe,76
+Joe,103
+Joe,81
+Joe,113
+Joe,84
