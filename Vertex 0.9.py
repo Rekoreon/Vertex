@@ -156,16 +156,16 @@ def gameLoop(mode,name):
                 written, place = writeToFile(name,score,written,mode)
             gameDisplay.fill(black)
             blitMessage("GAME OVER",red,cyan,display_size/2,display_size*0.1,108)
-            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.30,36)
+            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.29,36)
             if place <10:
                 if place == 0:
-                    blitMessage("1st Place! You are the champion!",white,purple,display_size/2,display_size*0.34,36)
+                    blitMessage("1st Place! You are the champion!",green,purple,display_size/2,display_size*0.34,36)
                 elif place == 1:
-                    blitMessage("2nd Place! Runner up!",white,purple,display_size/2,display_size*0.34,36)
+                    blitMessage("2nd Place! Runner up!",green,purple,display_size/2,display_size*0.34,36)
                 elif place == 2:
-                    blitMessage("3rd Place! Bronze is still a medal!",white,purple,display_size/2,display_size*0.34,36)
+                    blitMessage("3rd Place! Bronze is still a medal!",green,purple,display_size/2,display_size*0.34,36)
                 else:
-                    blitMessage("{0}th Place! Good Job!".format(place),white,purple,display_size/2,display_size*0.34,36)
+                    blitMessage("{0}th Place!".format(place+1),green,purple,display_size/2,display_size*0.34,36)
             else:
                 blitMessage("You didn't make the leaderboard :(",white,purple,display_size/2,display_size*0.34,36)
             blitMessage("PRESS P TO PLAY AGAIN",red,cyan,display_size/2,display_size*0.45,48)
@@ -288,6 +288,9 @@ def writeToFile(name,score,written,mode):
             leaderboard = leaderboard[0:-1]
             place = count
         count+=1
+    if not written:
+        place = 10
+        written = True
     if mode == "normal":
         file = open("leaderboardNormal.txt","w")
     elif mode == "mixed":
