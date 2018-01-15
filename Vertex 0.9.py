@@ -270,7 +270,7 @@ def writeToFile(name,score,written,mode):
         #elif name == i[0] and score >= int(i[1]) and not written:
         #    leaderboard[count] = [name,score]
         #    written = True
-        if name != i[0] and score > int(i[1]) and not written:
+        if score > int(i[1]) and not written:
             leaderboard.insert(count,[name,score])
             written = True
             leaderboard = leaderboard[0:-1]
