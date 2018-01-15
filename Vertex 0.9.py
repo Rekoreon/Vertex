@@ -3,7 +3,7 @@ import time
 import random
 pygame.init()
 display_size = 600
-gameDisplay = pygame.display.set_mode((display_size,display_size))
+gameDisplay = pygame.display.set_mode((display_size+20,display_size))
 pygame.display.set_caption('Vertex')
 white = (255,255,255)
 black = (0,0,0)
@@ -88,7 +88,7 @@ def gameLoop(mode,name):
             life_drain=0
             score = 0
             msg = "Score = %s" %score
-            lead_x = ((display_size/2)-(block_size/2))
+            lead_x = ((display_size/2)-(block_size/2))+20
             lead_y = ((display_size/2)-(block_size/2))
             lead_x_life = display_size
             speed = (display_size/2-block_size/2)/4
@@ -106,15 +106,19 @@ def gameLoop(mode,name):
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         lead_x_change = -speed
                         lead_y_change = 0
+                        sound.play()
                     elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         lead_x_change = speed
                         lead_y_change = 0
+                        sound.play()
                     elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         lead_y_change = speed
                         lead_x_change = 0
+                        sound.play()
                     elif event.key == pygame.K_UP or event.key == pygame.K_w:
                         lead_y_change = -speed
                         lead_x_change = 0
+                        sound.play()
         lead_x += lead_x_change
         lead_y += lead_y_change
         lead_x_life -= life_drain       
@@ -122,13 +126,14 @@ def gameLoop(mode,name):
         gameDisplay.fill(black)
         pygame.draw.rect(gameDisplay, red, [0,0,20,(display_size)])
         pygame.draw.rect(gameDisplay, green, [0,display_size,20,-lead_x_life])
-        gameDisplay.blit(board,(0,0))
+        gameDisplay.blit(board,(20,0))
+        blitMessage("V E R T E X".format(name),green,purple,display_size*0.225,display_size*0.025,48)
         gameDisplay.blit(flash,(flash_coords[0],flash_coords[1]))
         gameDisplay.blit(diamond,(lead_x,lead_y))
         blitMessage(msg,white,purple,(display_size-(display_size/5)),10,36)
         pygame.display.update()
         if lead_x == point_coords[0] and lead_y == point_coords[1]:
-            sound.play()
+
             flash_num = flash_num_creator(flash_num,mode)
             score = score + 1
             msg = "Score = %s" %score
@@ -148,10 +153,21 @@ def gameLoop(mode,name):
                     music.stop()
         while gameOver == True:
             if written == False:
-                written = writeToFile(name,score,written,mode)
+                written, place = writeToFile(name,score,written,mode)
             gameDisplay.fill(black)
             blitMessage("GAME OVER",red,cyan,display_size/2,display_size*0.1,108)
-            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.32,36)
+            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.30,36)
+            if place <10:
+                if place == 0:
+                    blitMessage("1st Place! You are the champion!",white,purple,display_size/2,display_size*0.34,36)
+                elif place == 1:
+                    blitMessage("2nd Place! Runner up!",white,purple,display_size/2,display_size*0.34,36)
+                elif place == 2:
+                    blitMessage("3rd Place! Bronze is still a medal!",white,purple,display_size/2,display_size*0.34,36)
+                else:
+                    blitMessage("{0}th Place! Good Job!".format(place),white,purple,display_size/2,display_size*0.34,36)
+            else:
+                blitMessage("You didn't make the leaderboard :(",white,purple,display_size/2,display_size*0.34,36)
             blitMessage("PRESS P TO PLAY AGAIN",red,cyan,display_size/2,display_size*0.45,48)
             blitMessage("PRESS M TO FOR MAIN MENU",red,cyan,display_size/2,display_size*0.55,48)
             blitMessage("PRESS L TO VIEW LEADERBOARD",red,cyan,display_size/2,display_size*0.65,48)
@@ -170,7 +186,7 @@ def gameLoop(mode,name):
         clock.tick(FPS)
 
 def resetPos(block_size):
-    lead_x = ((display_size/2)-(block_size/2))
+    lead_x = ((display_size/2)-(block_size/2))+20
     lead_y = ((display_size/2)-(block_size/2))
     lead_x_change = 0
     lead_y_change = 0
@@ -192,14 +208,14 @@ def flash_num_creator(flash_num,mode):
     return flash_num
 
 def coord_maker(flash_num,flash_left,flash_left_red,block_size):
-    left_coords = [0, display_size/2-block_size/2]
-    top_coords = [display_size/2-block_size/2, 0]
-    right_coords = [display_size-block_size, display_size/2-block_size/2]
-    bottom_coords = [display_size/2-block_size/2, display_size-block_size]
-    flash_left_coords = [0, display_size/2-150]
-    flash_top_coords = [display_size/2-150, 0]
-    flash_right_coords = [display_size-150, display_size/2-150]
-    flash_bottom_coords = [display_size/2-150, display_size-150]
+    left_coords = [20, display_size/2-block_size/2]
+    top_coords = [display_size/2-block_size/2+20, 0]
+    right_coords = [display_size-block_size+20, display_size/2-block_size/2]
+    bottom_coords = [display_size/2-block_size/2+20, display_size-block_size]
+    flash_left_coords = [20, display_size/2-150]
+    flash_top_coords = [display_size/2-130, 0]
+    flash_right_coords = [display_size-130, display_size/2-150]
+    flash_bottom_coords = [display_size/2-130, display_size-150]
     death_coords = []
     if flash_num == 1:
         flash = flash_left
@@ -262,18 +278,15 @@ def writeToFile(name,score,written,mode):
         temp = line.split(",")
         temp[1]=int(temp[1][0:-1])
         leaderboard.append(temp)
-    file.close() 
+    file.close()
     count = 0
+    place = 0
     for i in leaderboard:
-        #if name == i[0] and score < int(i[1]):
-        #    written = True      
-        #elif name == i[0] and score >= int(i[1]) and not written:
-        #    leaderboard[count] = [name,score]
-        #    written = True
         if score > int(i[1]) and not written:
             leaderboard.insert(count,[name,score])
             written = True
             leaderboard = leaderboard[0:-1]
+            place = count
         count+=1
     if mode == "normal":
         file = open("leaderboardNormal.txt","w")
@@ -282,7 +295,7 @@ def writeToFile(name,score,written,mode):
     for i in leaderboard:
         file.write("{0},{1}\n".format(i[0],i[1]))
     file.close()
-    return written
+    return written, place
 
 def leaderboardFunc(mode,name):
     arrow = pygame.image.load("arrow.png")
