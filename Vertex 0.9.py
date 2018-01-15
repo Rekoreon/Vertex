@@ -16,9 +16,159 @@ liquid_clear = (0,0,0,0)
 clock = pygame.time.Clock()
 FPS = 60
 
-
-###FUNCTIONAL FUNCTIONS
-
+def start():
+    pygame.mixer.init()
+    startBool = True
+    signInBool = True
+    name = ""
+    width = 600
+    height = 600
+    while startBool:
+        while signInBool:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    try:
+                        key = chr(event.key)
+                        if name == "" or name[-1]==" ":
+                            key = key.upper()
+                    except ValueError:
+                        key = ""
+                    if key =="\r":
+                        signInBool=False
+                        key = ""
+                    elif key =="\x08":
+                        name = name[0:-1]
+                        key = ""
+                    if len(name) <10:
+                        name+=key
+            gameDisplay.fill(black)
+            blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_size/2,display_size*0.45,36)
+            blitMessage(name,white,purple,display_size/2,display_size/2,36)
+            pygame.display.update()
+        gameDisplay.fill(black)
+        blitMessage("V E R T E X".format(name),green,purple,display_size/2,display_size*0.1,144)
+        blitMessage("Welcome, {0}!".format(name),white,purple,display_size/2,display_size*0.32,54)
+        blitMessage("PRESS 1 TO PLAY NORMAL MODE",green,purple,display_size/2,display_size*0.45,48)
+        blitMessage("PRESS 2 TO PLAY MIXED MODE ",green,purple,display_size/2,display_size*0.55,48)
+        blitMessage("PRESS L TO VIEW LEADERBOARD",green,purple,display_size/2,display_size*0.65,48)
+        blitMessage("PRESS S TO SIGN OUT",green,purple,display_size/2,display_size*0.775,36)
+        blitMessage("PRESS Q TO QUIT",green,purple,display_size/2,display_size*0.85,36)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    gameLoop("normal",name)
+                elif event.key == pygame.K_2:
+                    gameLoop("mixed",name)
+                elif event.key == pygame.K_q:
+                    startBool= False
+                elif event.key == pygame.K_l:
+                    leaderboardFunc("normal",name)
+                elif event.key == pygame.K_s:
+                    signInBool = True
+                    
+def gameLoop(mode,name):
+    board = pygame.image.load("board.png")
+    diamond = pygame.image.load("diamond.png")
+    flash_left = pygame.image.load("flash_left.png")
+    flash_left_red = pygame.image.load("flash_left_red.png")
+    lifeBar = pygame.image.load("lifeBar.png")
+    sound = pygame.mixer.Sound("soft-hitnormalhh.wav")
+    sound.set_volume(0.1)
+    section_pass = pygame.mixer.Sound("sectionpass.mp3")
+    section_pass.set_volume(0.1)
+    music = pygame.mixer.Sound("EDM Detection Mode.wav")
+    music.set_volume(0.1)
+    block_size = diamond.get_height()
+    gameOver = False
+    gameLoopBool = True
+    reset = True
+    while gameLoopBool:
+        if reset:
+            flash_num = flash_num_creator(0,mode)
+            life_drain=0
+            score = 0
+            msg = "Score = %s" %score
+            lead_x = ((display_size/2)-(block_size/2))
+            lead_y = ((display_size/2)-(block_size/2))
+            lead_x_life = 0
+            speed = (display_size/2-block_size/2)/4
+            lead_x_change=0
+            lead_y_change=0
+            reset = False
+            written = False
+            music.play()
+        if lead_x_change == 0 and lead_y_change == 0:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameLoopBool = False
+                    startBool = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        lead_x_change = -speed
+                        lead_y_change = 0
+                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        lead_x_change = speed
+                        lead_y_change = 0
+                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                        lead_y_change = speed
+                        lead_x_change = 0
+                    elif event.key == pygame.K_UP or event.key == pygame.K_w:
+                        lead_y_change = -speed
+                        lead_x_change = 0
+        lead_x += lead_x_change
+        lead_y += lead_y_change
+        lead_x_life -= life_drain       
+        flash, flash_coords, point_coords, death_coords = coord_maker(flash_num,flash_left,flash_left_red,block_size) 
+        gameDisplay.fill(black)
+        pygame.draw.rect(gameDisplay, red, [0,0,(display_size/2),20])
+        gameDisplay.blit(lifeBar, [lead_x_life,0])
+        gameDisplay.blit(board,(0,0))
+        gameDisplay.blit(flash,(flash_coords[0],flash_coords[1]))
+        gameDisplay.blit(diamond,(lead_x,lead_y))
+        blitMessage(msg,white,purple,(display_size-(display_size/5)),10,36)
+        pygame.display.update()
+        if lead_x == point_coords[0] and lead_y == point_coords[1] and flash_num<9 or flash_num > 8 and lead_x_life<=(-display_size/2):
+            sound.play()
+            flash_num = flash_num_creator(flash_num,mode)
+            score = score + 1
+            msg = "Score = %s" %score
+            if life_drain == 0:
+                life_drain = 3
+            elif life_drain < 12 and life_drain > 0 and score%10 == 0:
+                section_pass.play()
+                life_drain += 0.9
+            lead_x, lead_y, lead_x_change, lead_y_change, lead_x_life = resetPos(block_size)
+        elif lead_x_life <= (-display_size/2) and flash_num <9:
+            gameOver = True
+            music.stop()
+        else:
+            for i in death_coords:
+                if lead_x == i[0] and lead_y ==i[1]:
+                    gameOver = True
+                    music.stop()
+        while gameOver == True:
+            if written == False:
+                written = writeToFile(name,score,written,mode)
+            gameDisplay.fill(black)
+            blitMessage("GAME OVER",red,cyan,display_size/2,display_size*0.1,108)
+            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.32,36)
+            blitMessage("PRESS P TO PLAY AGAIN",red,cyan,display_size/2,display_size*0.45,48)
+            blitMessage("PRESS M TO FOR MAIN MENU",red,cyan,display_size/2,display_size*0.55,48)
+            blitMessage("PRESS L TO VIEW LEADERBOARD",red,cyan,display_size/2,display_size*0.65,48)
+            blitMessage("Thank you for playing!",white,purple,display_size/2,display_size*0.8125,36)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        gameOver = False
+                        reset = True
+                    elif event.key == pygame.K_m:
+                        gameOver = False
+                        gameLoopBool = False
+                    elif event.key == pygame.K_l:
+                        leaderboardFunc(mode,name)
+        clock.tick(FPS)
 
 def resetPos(block_size):
     lead_x = ((display_size/2)-(block_size/2))
@@ -27,18 +177,6 @@ def resetPos(block_size):
     lead_y_change = 0
     lead_x_life = 0
     return lead_x,lead_y,lead_x_change,lead_y_change,lead_x_life
-    
-
-def draw_stuff(board,flash,flash_coords,diamond,lead_x,lead_y,white,red,lead_x_life,msg,block_size,lifeBar):
-    gameDisplay.fill(black)
-    pygame.draw.rect(gameDisplay, red, [0,0,(display_size/2),20])
-    gameDisplay.blit(lifeBar, [lead_x_life,0])
-    gameDisplay.blit(board,(0,0))
-    gameDisplay.blit(flash,(flash_coords[0],flash_coords[1]))
-    gameDisplay.blit(diamond,(lead_x,lead_y))
-
-    blitMessage(msg,white,purple,(display_size-(display_size/5)),10,36)
-    pygame.display.update()
 
 def flash_num_creator(flash_num,mode):
     flash_nums = []
@@ -103,8 +241,7 @@ def coord_maker(flash_num,flash_left,flash_left_red,block_size):
         flash = pygame.transform.rotate(flash_left_red,90)
         flash_coords = flash_bottom_coords
         point_coords = top_coords
-        death_coords.extend([left_coords,right_coords,bottom_coords])
-    
+        death_coords.extend([left_coords,right_coords,bottom_coords])    
     return flash, flash_coords, point_coords, death_coords
 
 def blitMessage(msg,colour,shadow_colour,position,y,font_size):
@@ -128,35 +265,17 @@ def writeToFile(name,score,written,mode):
         leaderboard.append(temp)
     file.close() 
     count = 0
-
-    #leaderdict = dict( zip( [ n[0] for n in leaderboard ], [ n[1] for n in leaderboard ] ) )
-    #
-    #try:
-    #    if leaderdict[ name ] < score:
-    #        raise KeyError
-    #    else:
-    #        pass
-    #except KeyError:
-    #    leaderdict[name] = score
-
-    
     for i in leaderboard:
         if name == i[0] and score < int(i[1]):
-            written = True
-            
+            written = True      
         elif name == i[0] and score >= int(i[1]) and not written:
             leaderboard[count] = [name,score]
             written = True
-            
         elif name != i[0] and score > int(i[1]) and not written:
             leaderboard.insert(count,[name,score])
             written = True
             leaderboard = leaderboard[0:-1]
-            
-
-
         count+=1
-        
     if mode == "normal":
         file = open("leaderboardNormal.txt","w")
     elif mode == "mixed":
@@ -165,152 +284,6 @@ def writeToFile(name,score,written,mode):
         file.write("{0},{1}\n".format(i[0],i[1]))
     file.close()
     return written
-
-#GAME FUNCTIONS
-
-def titleScreen():
-    titleScreenBool = True
-    signInBool =True
-    name = ""
-    width = 600
-    height = 600
-    while titleScreenBool:
-        while signInBool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    try:
-                        key = chr(event.key)
-                        if name == "" or name[-1]==" ":
-                            key = key.upper()
-                    except ValueError:
-                        key = ""
-                    if key =="\r":
-                        signInBool=False
-                        key = ""
-                    elif key =="\x08":
-                        name = name[0:-1]
-                        key = ""
-                    if len(name) <10:
-                        name+=key
- 
-            gameDisplay.fill(black)
-            blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_size/2,display_size*0.45,36)
-
-            blitMessage(name,white,purple,display_size/2,display_size/2,36)
-            pygame.display.update()
-        gameDisplay.fill(black)
-        blitMessage("V E R T E X".format(name),green,purple,display_size/2,display_size*0.1,144)
-        blitMessage("Welcome, {0}!".format(name),white,purple,display_size/2,display_size*0.32,54)
-        blitMessage("PRESS 1 TO PLAY NORMAL MODE",green,purple,display_size/2,display_size*0.45,48)
-        blitMessage("PRESS 2 TO PLAY MIXED MODE ",green,purple,display_size/2,display_size*0.55,48)
-        blitMessage("PRESS L TO VIEW LEADERBOARD",green,purple,display_size/2,display_size*0.65,48)
-        blitMessage("PRESS S TO SIGN OUT",green,purple,display_size/2,display_size*0.775,36)
-        blitMessage("PRESS Q TO QUIT",green,purple,display_size/2,display_size*0.85,36)
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    gameLoop("normal",name)
-                elif event.key == pygame.K_2:
-                    gameLoop("mixed",name)
-                elif event.key == pygame.K_q:
-                    titleScreenBool= False
-                elif event.key == pygame.K_l:
-                    leaderboardFunc("normal",name)
-                elif event.key == pygame.K_s:
-                    signInBool = True
-
-def gameLoop(mode,name):
-    board = pygame.image.load("board.png")
-    diamond = pygame.image.load("diamond.png")
-    flash_left = pygame.image.load("flash_left.png")
-    flash_left_red = pygame.image.load("flash_left_red.png")
-    lifeBar = pygame.image.load("lifeBar.png")
-    sound = pygame.mixer.Sound("normal-hitfinish.wav")
-    section_pass = pygame.mixer.Sound("sectionpass.mp3")
-    block_size = diamond.get_height()
-    gameOver = False
-    gameLoopBool = True
-    reset = True
-    while gameLoopBool:
-        if reset:
-            flash_num = flash_num_creator(0,mode)
-            life_drain=0
-            score = 0
-            msg = "Score = %s" %score
-            lead_x = ((display_size/2)-(block_size/2))
-            lead_y = ((display_size/2)-(block_size/2))
-            lead_x_life = 0
-            speed = (display_size/2-block_size/2)/4
-            lead_x_change=0
-            lead_y_change=0
-            reset = False
-            written = False
-        if lead_x_change == 0 and lead_y_change == 0:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    gameLoopBool = False
-                    titleScreenBool = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        lead_x_change = -speed
-                        lead_y_change = 0
-                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        lead_x_change = speed
-                        lead_y_change = 0
-                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                        lead_y_change = speed
-                        lead_x_change = 0
-                    elif event.key == pygame.K_UP or event.key == pygame.K_w:
-                        lead_y_change = -speed
-                        lead_x_change = 0
-        lead_x += lead_x_change
-        lead_y += lead_y_change
-        lead_x_life -= life_drain
-        
-        flash, flash_coords, point_coords, death_coords = coord_maker(flash_num,flash_left,flash_left_red,block_size)
-        
-        draw_stuff(board,flash,flash_coords,diamond,lead_x,lead_y,white,red,lead_x_life,msg,block_size,lifeBar)
-        
-        if lead_x == point_coords[0] and lead_y == point_coords[1] and flash_num<9 or flash_num > 8 and lead_x_life<=(-display_size/2):
-            sound.play()
-            flash_num = flash_num_creator(flash_num,mode)
-            score = score + 1
-            msg = "Score = %s" %score
-            if life_drain == 0:
-                life_drain = 3
-            elif life_drain < 12 and life_drain > 0 and score%10 == 0:
-                section_pass.play()
-                life_drain += 0.9
-            lead_x, lead_y, lead_x_change, lead_y_change, lead_x_life = resetPos(block_size)
-        elif lead_x_life <= (-display_size/2) and flash_num <9:
-            gameOver = True
-        else:
-            for i in death_coords:
-                if lead_x == i[0] and lead_y ==i[1]:
-                    gameOver = True
-        while gameOver == True:
-            if written == False:
-                written = writeToFile(name,score,written,mode)
-            gameDisplay.fill(black)
-            blitMessage("GAME OVER",red,cyan,display_size/2,display_size*0.1,108)
-            blitMessage("Well done {0}, you got {1} points!".format(name,score),white,purple,display_size/2,display_size*0.32,36)
-            blitMessage("PRESS P TO PLAY AGAIN",red,cyan,display_size/2,display_size*0.45,48)
-            blitMessage("PRESS M TO FOR MAIN MENU",red,cyan,display_size/2,display_size*0.55,48)
-            blitMessage("PRESS L TO VIEW LEADERBOARD",red,cyan,display_size/2,display_size*0.65,48)
-            blitMessage("Thank you for playing!",white,purple,display_size/2,display_size*0.8125,36)
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_p:
-                        gameOver = False
-                        reset = True
-                    elif event.key == pygame.K_m:
-                        gameOver = False
-                        gameLoopBool = False
-                    elif event.key == pygame.K_l:
-                        leaderboardFunc(mode,name)
-        clock.tick(FPS)
 
 def leaderboardFunc(mode,name):
     arrow = pygame.image.load("arrow.png")
@@ -387,8 +360,8 @@ def leaderboardFunc(mode,name):
                  elif event.key == pygame.K_l:
                      keepLeaderboarding = False
 
-pygame.mixer.init()
 
-titleScreen()
+
+start()
 pygame.quit()
 quit()
