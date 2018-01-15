@@ -72,7 +72,6 @@ def gameLoop(mode,name):
     diamond = pygame.image.load("diamond.png")
     flash_left = pygame.image.load("flash_left.png")
     flash_left_red = pygame.image.load("flash_left_red.png")
-    lifeBar = pygame.image.load("lifeBar.png")
     sound = pygame.mixer.Sound("soft-hitnormalhh.wav")
     sound.set_volume(0.1)
     section_pass = pygame.mixer.Sound("sectionpass.mp3")
@@ -91,7 +90,7 @@ def gameLoop(mode,name):
             msg = "Score = %s" %score
             lead_x = ((display_size/2)-(block_size/2))
             lead_y = ((display_size/2)-(block_size/2))
-            lead_x_life = 0
+            lead_x_life = display_size
             speed = (display_size/2-block_size/2)/4
             lead_x_change=0
             lead_y_change=0
@@ -121,25 +120,25 @@ def gameLoop(mode,name):
         lead_x_life -= life_drain       
         flash, flash_coords, point_coords, death_coords = coord_maker(flash_num,flash_left,flash_left_red,block_size) 
         gameDisplay.fill(black)
-        pygame.draw.rect(gameDisplay, red, [0,0,(display_size/2),20])
-        gameDisplay.blit(lifeBar, [lead_x_life,0])
+        pygame.draw.rect(gameDisplay, red, [0,0,20,(display_size)])
+        pygame.draw.rect(gameDisplay, green, [0,display_size,20,-lead_x_life])
         gameDisplay.blit(board,(0,0))
         gameDisplay.blit(flash,(flash_coords[0],flash_coords[1]))
         gameDisplay.blit(diamond,(lead_x,lead_y))
         blitMessage(msg,white,purple,(display_size-(display_size/5)),10,36)
         pygame.display.update()
-        if lead_x == point_coords[0] and lead_y == point_coords[1] and flash_num<9 or flash_num > 8 and lead_x_life<=(-display_size/2):
+        if lead_x == point_coords[0] and lead_y == point_coords[1]:
             sound.play()
             flash_num = flash_num_creator(flash_num,mode)
             score = score + 1
             msg = "Score = %s" %score
             if life_drain == 0:
-                life_drain = 3
-            elif life_drain < 12 and life_drain > 0 and score%10 == 0:
+                life_drain = 6
+            elif life_drain < 24 and life_drain > 0 and score%10 == 0:
                 section_pass.play()
-                life_drain += 0.9
+                life_drain += 1.8
             lead_x, lead_y, lead_x_change, lead_y_change, lead_x_life = resetPos(block_size)
-        elif lead_x_life <= (-display_size/2) and flash_num <9:
+        elif lead_x_life <= 0:
             gameOver = True
             music.stop()
         else:
@@ -175,7 +174,7 @@ def resetPos(block_size):
     lead_y = ((display_size/2)-(block_size/2))
     lead_x_change = 0
     lead_y_change = 0
-    lead_x_life = 0
+    lead_x_life = display_size
     return lead_x,lead_y,lead_x_change,lead_y_change,lead_x_life
 
 def flash_num_creator(flash_num,mode):
@@ -266,12 +265,12 @@ def writeToFile(name,score,written,mode):
     file.close() 
     count = 0
     for i in leaderboard:
-        if name == i[0] and score < int(i[1]):
-            written = True      
-        elif name == i[0] and score >= int(i[1]) and not written:
-            leaderboard[count] = [name,score]
-            written = True
-        elif name != i[0] and score > int(i[1]) and not written:
+        #if name == i[0] and score < int(i[1]):
+        #    written = True      
+        #elif name == i[0] and score >= int(i[1]) and not written:
+        #    leaderboard[count] = [name,score]
+        #    written = True
+        if name != i[0] and score > int(i[1]) and not written:
             leaderboard.insert(count,[name,score])
             written = True
             leaderboard = leaderboard[0:-1]
