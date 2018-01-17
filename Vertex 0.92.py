@@ -4,7 +4,8 @@ import random
 import urllib
 pygame.init()
 display_size = 600
-gameDisplay = pygame.display.set_mode((display_size+20,display_size))
+display_width = 620
+gameDisplay = pygame.display.set_mode((display_width,display_size))
 pygame.display.set_caption('Vertex')
 white = (255,255,255)
 black = (0,0,0)
@@ -19,7 +20,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 def start():
-    blitMessage("L O A D I N G . . .",green,purple,display_size/2,display_size*0.45,72, False)
+    blitMessage("L O A D I N G . . .",green,purple,display_width/2,display_size*0.45,72, False)
     pygame.display.update()
     pygame.mixer.init()
     music = pygame.mixer.Sound("EDM Detection Mode.wav")
@@ -50,17 +51,17 @@ def start():
                     if len(name) <10:
                         name+=key
             gameDisplay.fill(black)
-            blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_size/2,display_size*0.45,36, False)
-            blitMessage(name,white,purple,display_size/2,display_size/2,36, False)
+            blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_width/2,display_size*0.45,36, False)
+            blitMessage(name,white,purple,display_width/2,display_size/2,36, False)
             pygame.display.update()
         gameDisplay.fill(black)
-        blitMessage("V E R T E X".format(name),green,purple,display_size/2,display_size*0.1,144, False)
-        blitMessage("Welcome, {0}!".format(name),cyan,purple,display_size/2,display_size*0.32,54, False)
-        blitMessage("PLAY NORMAL MODE",green,purple,display_size/2,display_size*0.45,48, menu_options[0])
-        blitMessage("PLAY SPECIAL MODE",green,purple,display_size/2,display_size*0.55,48, menu_options[1])
-        blitMessage("VIEW LEADERBOARD",green,purple,display_size/2,display_size*0.65,48, menu_options[2])
-        blitMessage("SIGN OUT",green,purple,display_size/2,display_size*0.775,36, menu_options[3])
-        blitMessage("QUIT",green,purple,display_size/2,display_size*0.85,36, menu_options[4])
+        blitMessage("V E R T E X".format(name),green,purple,display_width/2,display_size*0.1,144, False)
+        blitMessage("Welcome, {0}!".format(name),cyan,blue,display_width/2,display_size*0.32,54, False)
+        blitMessage("PLAY NORMAL MODE",green,purple,display_width/2,display_size*0.45,48, menu_options[0])
+        blitMessage("PLAY SPECIAL MODE",green,purple,display_width/2,display_size*0.55,48, menu_options[1])
+        blitMessage("VIEW LEADERBOARD",green,purple,display_width/2,display_size*0.65,48, menu_options[2])
+        blitMessage("SIGN OUT",green,purple,display_width/2,display_size*0.775,36, menu_options[3])
+        blitMessage("QUIT",green,purple,display_width/2,display_size*0.85,36, menu_options[4])
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -117,9 +118,9 @@ def gameLoop(mode,name,music):
             lead_y_change=0
             reset = False
             victory = red
-            victory_shadow = green
+            victory_shadow = cyan
             gameOverMsg = "GAME OVER"
-            gameOverFont = 108
+            gameOverFont = 144
             gameOverFontChange = -1
             gameOver_options = [1,0,0]
             pointer = 0
@@ -156,13 +157,10 @@ def gameLoop(mode,name,music):
         pygame.draw.rect(gameDisplay, red, [0,0,20,(display_size)])
         pygame.draw.rect(gameDisplay, green, [0,display_size,20,-lead_x_life])
         gameDisplay.blit(board,(20,0))
-        if score < 100:
-            blitMessage("V E R T E X",green,purple,display_size*0.225,display_size*0.025,48, False)
-        else:
-            blitMessage("V E R T E X",white,green,display_size*0.225,display_size*0.025,48, False)
+        blitMessage("V E R T E X",green,purple,display_width*0.225,display_size*0.025,48, False)
         gameDisplay.blit(flash,(flash_coords[0],flash_coords[1]))
         gameDisplay.blit(diamond,(lead_x,lead_y))
-        blitMessage(msg,white,purple,(display_size-(display_size/5)),10,36, False)
+        blitMessage(msg,cyan,blue,(display_width*0.85),display_size*0.02,36, False)
         pygame.display.update()
         if lead_x == point_coords[0] and lead_y == point_coords[1]:
 
@@ -191,47 +189,47 @@ def gameLoop(mode,name,music):
                 written, place = writeToFile(name,score,written,mode)
             gameDisplay.fill(black)
             
-            blitMessage("{1} points".format(name,score),white,purple,display_size/2,display_size*0.325,72, False)
+            blitMessage("{1} points".format(name,score),cyan,blue,display_width/2,display_size*0.325,72, False)
             if place <10:
                 if place == 0:
-                    blitMessage("You are the champion, {0}!".format(name),yellow,purple,display_size/2,display_size*0.4425,36, False)
+                    blitMessage("You are the champion, {0}!".format(name),yellow,purple,display_width/2,display_size*0.4425,36, False)
                     if not musicing:
                         firstPlaceFanfare.play()
                         musicing = True
                     if victory == red:
-                        victory = green
+                        victory = cyan
                         victory_shadow = red
-                    elif victory == green:
+                    elif victory == cyan:
                         victory = red
-                        victory_shadow = green
+                        victory_shadow = cyan
                     gameOverFont+=gameOverFontChange
                     if gameOverFont>= 200:
                         gameOverFontChange=-1
-                    elif gameOverFont<=50:
+                    elif gameOverFont<=100:
                         gameOverFontChange=1
                     gameOverMsg = "HIGHSCORE"
                 elif place == 1:
-                    blitMessage("2nd Place! Runner up!",cyan,purple,display_size/2,display_size*0.4425,36, False)
+                    blitMessage("2nd Place! Runner up!",cyan,blue,display_width/2,display_size*0.4425,36, False)
                     if not musicing:
                         fanfare.play()
                         musicing =  True
                 elif place == 2:
-                    blitMessage("3rd Place! Bronze is still a medal!",cyan,purple,display_size/2,display_size*0.4425,36, False)
+                    blitMessage("3rd Place! Bronze is still a medal!",cyan,blue,display_width/2,display_size*0.4425,36, False)
                     if not musicing:
                         fanfare.play()
                         musicing =  True
                 else:
-                    blitMessage("{0}th Place!".format(place+1),cyan,purple,display_size/2,display_size*0.4425,36, False)
+                    blitMessage("{0}th place on the leaderboard!".format(place+1),cyan,blue,display_width/2,display_size*0.4425,36, False)
                     if not musicing:
                         fanfare.play()
                         musicing =  True
             else:
-                blitMessage("You didn't make the leaderboard :(",white,purple,display_size/2,display_size*0.4425,36, False)
-            blitMessage(gameOverMsg,victory,victory_shadow,display_size/2,display_size*0.1,gameOverFont, False)
-            blitMessage("PLAY AGAIN",red,blue,display_size/2,display_size*0.55,48, gameOver_options[0])
-            blitMessage("MAIN MENU",red,blue,display_size/2,display_size*0.65,48, gameOver_options[1])
-            blitMessage("VIEW LEADERBOARD",red,blue,display_size/2,display_size*0.75,48, gameOver_options[2])
-            blitMessage("Thank you for playing!",white,purple,display_size/2,display_size*0.9125,36, False)
+                blitMessage("You didn't make the leaderboard :(",cyan,blue,display_width/2,display_size*0.4425,36, False)
+            blitMessage(gameOverMsg,victory,victory_shadow,display_width/2,display_size*0.1,gameOverFont, False)
+            blitMessage("PLAY AGAIN",green,purple,display_width/2,display_size*0.55,48, gameOver_options[0])
+            blitMessage("LEADERBOARD",green,purple,display_width/2,display_size*0.65,48, gameOver_options[1])
+            blitMessage("MAIN MENU",green,purple,display_width/2,display_size*0.75,48, gameOver_options[2])
+            blitMessage("Thank you for playing!",green,purple,display_width/2,display_size*0.9125,36, False)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -253,11 +251,11 @@ def gameLoop(mode,name,music):
                             reset = True
                             pygame.mixer.stop()
                         elif gameOver_options[1]:
+                            leaderboardFunc(mode,name,place,True)
+                        elif gameOver_options[2]:
                             gameOver = False
                             gameLoopBool = False
                             pygame.mixer.stop()
-                        elif gameOver_options[2]:
-                            leaderboardFunc(mode,name,place,True)
         clock.tick(FPS)
 
 def resetPos(block_size):
@@ -343,8 +341,8 @@ def blitMessage(msg,colour,shadow_colour,position,y,font_size,select):
     if select:
         select_arrow = pygame.image.load("select.png")
         gameDisplay.blit(select_arrow, [(position-width/2)-16,y+height/4])
-        screen_text = font.render(msg,True,white)
-        shadow = font.render(msg,True,purple)
+        screen_text = font.render(msg,True,yellow)
+        shadow = font.render(msg,True,red)
     gameDisplay.blit(shadow, [(position-width/2)+1,y+1])
     gameDisplay.blit(screen_text, [(position-width/2),y])
     
@@ -402,53 +400,53 @@ def leaderboardFunc(mode,name,place,playing):
     printed = False
     while keepLeaderboarding:
         gameDisplay.fill(black)
-        blitMessage("L E A D E R B O A R D",green,purple,display_size/2,display_size*0.05,72, False)
-        blitMessage("PRESS L AGAIN TO CLOSE",green,purple,display_size/2,display_size*0.935,36, False)
+        blitMessage("L E A D E R B O A R D",green,purple,display_width/2,display_size*0.05,72, False)
+        blitMessage("PRESS BACKSPACE OR ESCAPE TO CLOSE",green,purple,display_width/2,display_size*0.935,36, False)
         y_pos=display_size*0.25
         count=1
         while not printed:
             if leaderboardMode == "normal":
-                blitMessage("of Normal Mode",green,purple,display_size/2,100,36, False)
+                blitMessage("of Normal Mode",green,purple,display_width/2,100,36, False)
                 gameDisplay.blit(pygame.transform.rotate(arrow,180),(550,display_size/2))
                 for i in range(0,10):
                     if leaderboardNormal[i][0] == name:
                         if count == place+1 and mode == "normal":
-                            blitMessage(str(count)+".",cyan,purple,120,y_pos,36, False)
-                            blitMessage(str(leaderboardNormal[i][0]),cyan,purple,display_size*0.4,y_pos,36, False)
-                            blitMessage(str(leaderboardNormal[i][1]),cyan,purple,(display_size/3)*2,y_pos,36, False)
+                            blitMessage(str(count)+".",cyan,blue,120,y_pos,36, False)
+                            blitMessage(str(leaderboardNormal[i][0]),cyan,blue,display_width*0.4,y_pos,36, False)
+                            blitMessage(str(leaderboardNormal[i][1]),cyan,blue,(display_width/3)*2,y_pos,36, False)
                         else:
                             blitMessage(str(count)+".",green,purple,120,y_pos,36, False)
-                            blitMessage(str(leaderboardNormal[i][0]),green,purple,display_size*0.4,y_pos,36, False)
-                            blitMessage(str(leaderboardNormal[i][1]),green,purple,(display_size/3)*2,y_pos,36, False)
+                            blitMessage(str(leaderboardNormal[i][0]),green,purple,display_width*0.4,y_pos,36, False)
+                            blitMessage(str(leaderboardNormal[i][1]),green,purple,(display_width/3)*2,y_pos,36, False)
                         y_pos+=40
                         count+=1
                     else:
                         blitMessage(str(count)+".",white,purple,120,y_pos,36, False)
-                        blitMessage(str(leaderboardNormal[i][0]),white,purple,display_size*0.4,y_pos,36, False)
-                        blitMessage(str(leaderboardNormal[i][1]),white,purple,(display_size/3)*2,y_pos,36, False)
+                        blitMessage(str(leaderboardNormal[i][0]),white,purple,display_width*0.4,y_pos,36, False)
+                        blitMessage(str(leaderboardNormal[i][1]),white,purple,(display_width/3)*2,y_pos,36, False)
                         y_pos+=40
                         count+=1
                 printed = True
                 pygame.display.update()
             elif leaderboardMode == "mixed":
-                blitMessage("of Mixed Mode",green,purple,display_size/2,100,36, False)
+                blitMessage("of Mixed Mode",green,purple,display_width/2,100,36, False)
                 gameDisplay.blit(arrow,(10,display_size/2))
                 for i in range(0,10):
                     if leaderboardMixed[i][0] == name:
                         if count == place+1 and mode == "mixed":
-                            blitMessage(str(count)+".",cyan,purple,120,y_pos,36, False)
-                            blitMessage(str(leaderboardMixed[i][0]),cyan,purple,display_size*0.4,y_pos,36, False)
-                            blitMessage(str(leaderboardMixed[i][1]),cyan,purple,(display_size/3)*2,y_pos,36, False)
+                            blitMessage(str(count)+".",cyan,blue,120,y_pos,36, False)
+                            blitMessage(str(leaderboardMixed[i][0]),cyan,blue,display_width*0.4,y_pos,36, False)
+                            blitMessage(str(leaderboardMixed[i][1]),cyan,blue,(display_width/3)*2,y_pos,36, False)
                         else:
                             blitMessage(str(count)+".",green,purple,120,y_pos,36, False)
-                            blitMessage(str(leaderboardMixed[i][0]),green,purple,display_size*0.4,y_pos,36, False)
-                            blitMessage(str(leaderboardMixed[i][1]),green,purple,(display_size/3)*2,y_pos,36, False)
+                            blitMessage(str(leaderboardMixed[i][0]),green,purple,display_width*0.4,y_pos,36, False)
+                            blitMessage(str(leaderboardMixed[i][1]),green,purple,(display_width/3)*2,y_pos,36, False)
                         y_pos+=40
                         count+=1
                     else:
                         blitMessage(str(count)+".",white,purple,120,y_pos,36, False)
-                        blitMessage(str(leaderboardMixed[i][0]),white,purple,display_size*0.4,y_pos,36, False)
-                        blitMessage(str(leaderboardMixed[i][1]),white,purple,(display_size/3)*2,y_pos,36, False)
+                        blitMessage(str(leaderboardMixed[i][0]),white,purple,display_width*0.4,y_pos,36, False)
+                        blitMessage(str(leaderboardMixed[i][1]),white,purple,(display_width/3)*2,y_pos,36, False)
                         y_pos+=40
                         count+=1
                 printed = True
@@ -463,7 +461,7 @@ def leaderboardFunc(mode,name,place,playing):
                      if leaderboardMode == "normal":
                          leaderboardMode = "mixed"
                          printed = False
-                 elif event.key == pygame.K_l:
+                 elif event.key == pygame.K_ESCAPE or event.key == pygame.K_BACKSPACE:
                      keepLeaderboarding = False
 
 
