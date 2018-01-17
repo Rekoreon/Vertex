@@ -52,7 +52,7 @@ def start():
                         name+=key
             gameDisplay.fill(black)
             blitMessage("Please enter a username (Max 10 Characters):",green,purple,display_width/2,display_size*0.45,36, False)
-            blitMessage(name,white,purple,display_width/2,display_size/2,36, False)
+            blitMessage(name,cyan,blue,display_width/2,display_size/2,36, False)
             pygame.display.update()
         gameDisplay.fill(black)
         blitMessage("V E R T E X".format(name),green,purple,display_width/2,display_size*0.1,144, False)
@@ -96,7 +96,7 @@ def gameLoop(mode,name,music):
     sound = pygame.mixer.Sound("soft-hitnormalhh.wav")
     sound.set_volume(0.1)
     section_pass = pygame.mixer.Sound("sectionpass.mp3")
-    passat90 = pygame.mixer.Sound("Running_in_the_90s.wav")
+    passat90 = pygame.mixer.Sound("ritn.wav")
     firstPlaceFanfare = pygame.mixer.Sound("first fanfare.wav")
     fanfare = pygame.mixer.Sound("Who Likes to Party.wav")
     section_pass.set_volume(0.1)
@@ -192,7 +192,7 @@ def gameLoop(mode,name,music):
             blitMessage("{1} points".format(name,score),cyan,blue,display_width/2,display_size*0.325,72, False)
             if place <10:
                 if place == 0:
-                    blitMessage("You are the champion, {0}!".format(name),yellow,purple,display_width/2,display_size*0.4425,36, False)
+                    blitMessage("You are the champion, {0}!".format(name),cyan,blue,display_width/2,display_size*0.4425,36, False)
                     if not musicing:
                         firstPlaceFanfare.play()
                         musicing = True
