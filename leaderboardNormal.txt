@@ -1,5 +1,6 @@
 Joe,133
 Gregor,117
+Sergio,112
 Mark,95
 Calum,88
 Isaac,75
@@ -7,4 +8,3 @@ Nathan,60
 NotBot0,40
 NotBot1,30
 NotBot2,20
-NotBot3,10

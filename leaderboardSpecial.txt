@@ -1,3 +1,4 @@
+Sergio,52
 NotBot0,50
 NotBot1,45
 NotBot2,40
@@ -7,4 +8,3 @@ NotBot5,35
 NotBot6,30
 NotBot7,25
 NotBot8,20
-NotBot9,15

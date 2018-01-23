@@ -92,7 +92,7 @@ def start():
                         titleMusic.play()
                     elif menu_options[1]:
                         titleMusic.stop()
-                        gameLoop("mixed",name)
+                        gameLoop("special",name)
                         titleMusic.play()
                     elif menu_options[2]:
                         leaderboardFunc("normal",name,-1,False)
@@ -281,18 +281,18 @@ def leaderboardFunc(mode,name,place,playing):
     arrow = pygame.image.load("arrow.png")
     file = open("leaderboardNormal.txt","r")
     leaderboardNormal = []
-    leaderboardMixed = []
+    leaderboardspecial = []
     leaderboardCurrent = []
     for line in file:
         temp = line.split(",")
         temp[1]=temp[1][0:-1]
         leaderboardNormal.append(temp)
     file.close()
-    file = open("leaderboardMixed.txt","r")
+    file = open("leaderboardSpecial.txt","r")
     for line in file:
         temp = line.split(",")
         temp[1]=temp[1][0:-1]
-        leaderboardMixed.append(temp)
+        leaderboardspecial.append(temp)
     file.close()
     keepLeaderboarding = True
     leaderboardMode = mode
@@ -300,8 +300,8 @@ def leaderboardFunc(mode,name,place,playing):
     while keepLeaderboarding:
         if leaderboardMode == "normal":
             leaderboardCurrent = leaderboardNormal
-        elif leaderboardMode == "mixed":
-            leaderboardCurrent = leaderboardMixed
+        elif leaderboardMode == "special":
+            leaderboardCurrent = leaderboardspecial
         gameDisplay.fill(black)
         blitMessage("L E A D E R B O A R D",green,purple,display_width/2,display_size*0.1,72, False)
         blitMessage("PRESS BACKSPACE OR ESCAPE TO CLOSE",green,purple,display_width/2,display_size*0.935,36, False)
@@ -311,7 +311,7 @@ def leaderboardFunc(mode,name,place,playing):
             blitMessage("of {0} mode".format(leaderboardMode),green,purple,display_width/2,display_size/6,36, False)
             if leaderboardMode == "normal":
                 gameDisplay.blit(pygame.transform.rotate(arrow,180),(550,display_size/2))
-            elif leaderboardMode == "mixed":
+            elif leaderboardMode == "special":
                 gameDisplay.blit(arrow,(10,display_size/2))
             for i in range(0,10):
                 if leaderboardCurrent[i][0] == name:
@@ -330,12 +330,12 @@ def leaderboardFunc(mode,name,place,playing):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                  if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                     if leaderboardMode == "mixed":
+                     if leaderboardMode == "special":
                          leaderboardMode = "normal"
                          printed = False
                  elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                      if leaderboardMode == "normal":
-                         leaderboardMode = "mixed"
+                         leaderboardMode = "special"
                          printed = False
                  elif event.key == pygame.K_ESCAPE or event.key == pygame.K_BACKSPACE:
                      keepLeaderboarding = False
@@ -353,7 +353,7 @@ def flash_num_creator(flash_num,mode):
     if mode == "normal":
         flash_nums_min=0
         flash_nums_lim=5
-    elif mode == "mixed":
+    elif mode == "special":
         flash_nums_min=0
         flash_nums_lim=9
     for i in range(flash_nums_lim):
@@ -434,8 +434,8 @@ def blitMessage(msg,colour,shadow_colour,position,y,font_size,select):
 def writeToFile(name,score,written,mode,messuj):
     if mode == "normal":
         file = open("leaderboardNormal.txt","r")
-    elif mode == "mixed":
-        file = open("leaderboardMixed.txt","r")
+    elif mode == "special":
+        file = open("leaderboardSpecial.txt","r")
     leaderboard = []
     for line in file:
         temp = line.split(",")
@@ -474,8 +474,8 @@ def writeToFile(name,score,written,mode,messuj):
         written = True
     if mode == "normal":
         file = open("leaderboardNormal.txt","w")
-    elif mode == "mixed":
-        file = open("leaderboardMixed.txt","w")
+    elif mode == "special":
+        file = open("leaderboardSpecial.txt","w")
     for i in leaderboard:
         file.write("{0},{1}\n".format(i[0],i[1]))
     file.close()
