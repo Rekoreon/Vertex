@@ -7,4 +7,4 @@ NotBot4,30
 NotBot5,35
 NotBot6,30
 NotBot7,25
-NotBot8,20
+Fork,25
