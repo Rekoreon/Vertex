@@ -364,7 +364,7 @@ def coord_maker(flash_num,flashGreen,flashRed,block_size):
     top_coords = [display_size/2-block_size/2+20, 0]
     right_coords = [display_size-block_size+20, display_size/2-block_size/2]
     bottom_coords = [display_size/2-block_size/2+20, display_size-block_size]
-    flashGreen_coords = [20, display_size/2-150]
+    flash_left_coords = [20, display_size/2-150]
     flash_top_coords = [display_size/2-130, 0]
     flash_right_coords = [display_size-130, display_size/2-150]
     flash_bottom_coords = [display_size/2-130, display_size-150]
@@ -372,7 +372,7 @@ def coord_maker(flash_num,flashGreen,flashRed,block_size):
     if flash_num == 1:
         flash = flashGreen
         point_coords = left_coords
-        flash_coords = flashGreen_coords
+        flash_coords = flash_left_coords
         death_coords.extend([top_coords,right_coords,bottom_coords])
     elif flash_num == 2:
         flash = pygame.transform.rotate(flashGreen,270)
@@ -391,7 +391,7 @@ def coord_maker(flash_num,flashGreen,flashRed,block_size):
         death_coords.extend([left_coords,top_coords,right_coords])
     elif flash_num == 5:
         flash = flashRed
-        flash_coords = flashGreen_coords
+        flash_coords = flash_left_coords
         point_coords = right_coords
         death_coords.extend([left_coords,top_coords,bottom_coords])         
     elif flash_num == 6:
