@@ -1,10 +1,10 @@
 Joe,133
-Autistic Four,118
 Gregor,117
-Sergio,112
-Knife Forkspoon,107
-Santa-sansansan,104
-Johnifer,100
-Tommi Wyseau,96
 Mark,95
-Calum,88
+-,0
+-,0
+-,0
+-,0
+-,0
+-,0
+-,0
