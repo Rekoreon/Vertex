@@ -66,13 +66,15 @@ def start():
             musicing = True
         gameDisplay.fill(black)
         blitMessage("V E R T E X",green,purple,display_width/2,display_size*0.15,144, False)
-        blitMessage("Welcome, {0}!".format(name),cyan,blue,display_width/2,display_size*0.37,54, False)
-        blitMessage("PLAY NORMAL MODE",green,purple,display_width/2,display_size*0.5,48, menu_options[0])
-        blitMessage("PLAY SPECIAL MODE",green,purple,display_width/2,display_size*0.6,48, menu_options[1])
-        blitMessage("VIEW LEADERBOARD",green,purple,display_width/2,display_size*0.7,48, menu_options[2])
+        blitMessage("Welcome, {0}!".format(name),cyan,blue,display_width/2,display_size*0.32,54, False)
+        blitMessage("PLAY NORMAL MODE",green,purple,display_width/2,display_size*0.45,48, menu_options[0])
+        blitMessage("PLAY SPECIAL MODE",green,purple,display_width/2,display_size*0.55,48, menu_options[1])
+        blitMessage("VIEW LEADERBOARD",green,purple,display_width/2,display_size*0.65,48, menu_options[2])
+        blitMessage("TUTORIAL",green,purple,display_width/2,display_size*0.75,36,False)
         blitMessage("SIGN OUT",green,purple,display_width/2,display_size*0.825,36, menu_options[3])
         blitMessage("QUIT",green,purple,display_width/2,display_size*0.9,36, menu_options[4])
         blitMessage("V1.0.1", white,purple,display_width*0.96,display_size*0.975,18,False)
+        blitMessage("F1 for Credits",white,purple,display_width*0.15,display_size*0.965,36,False)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -103,6 +105,22 @@ def start():
                         signInBool = True
                     elif menu_options[4]:
                         startBool = False
+                elif event.key == pygame.K_F1:
+                    infoBool = True
+                    gameDisplay.fill(black)
+                    blitMessage("You are a diamond.",cyan,blue,display_size/2,display_size*0.15,48,False)
+                    blitMessage("You see a green flash.",green,purple,display_size/2,display_size*0.25,48,False)
+                    blitMessage("You think 'yes'.",green,purple,display_size/2,display_size*0.35,48,False)
+                    blitMessage("You run towards the green flash.",green,purple,display_size/2,display_size*0.45,48,False)
+                    blitMessage("You see a red flash.",red,cyan,display_size/2,display_size*0.55,48,False)
+                    blitMessage("You think 'no'.",red,cyan,display_size/2,display_size*0.65,48,False)
+                    blitMessage("You run away from the red flash.",red,cyan,display_size/2,display_size*0.75,48,False)
+                    pygame.display.update()
+                    while infoBool:
+                        for event in pygame.event.get():
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_F1:
+                                    infoBool = False
                         
 def gameLoop(mode,name):
     gameDisplay.fill(black)
@@ -136,7 +154,7 @@ def gameLoop(mode,name):
             victory = red
             victory_shadow = cyan
             gameOverMsg = "GAME OVER"
-            gameOverFont = 152
+            gameOverFont = 128
             gameOverFontChange = -3
             gameOver_options = [1,0,0]
             pointer = 0
@@ -217,9 +235,9 @@ def gameLoop(mode,name):
                         victory = red
                         victory_shadow = cyan
                     gameOverFont+=gameOverFontChange
-                    if gameOverFont>= 198:
-                        gameOverFontChange=-3
-                    elif gameOverFont<=0:
+                    if gameOverFont>= 200:
+                        gameOverFontChange=-4
+                    elif gameOverFont<=2:
                         gameOverFontChange=9
                     gameOverMsg = "HIGHSCORE"
                 elif place == 1:
@@ -441,7 +459,7 @@ def writeToFile(name,score,written,mode,messuj):
     count = 0
     place = 0
     for i in leaderboard:
-        if score < int(i[1]) and name == i[0]:
+        if score <= int(i[1]) and name == i[0]:
             written = True
             if count+1 == 1:
                 position = "1st"
@@ -451,7 +469,7 @@ def writeToFile(name,score,written,mode,messuj):
                 position = "3rd"
             else:
                 position = "{0}th".format(count+1)
-            messuj = "Your old score is higher, you're still {0} place".format(position)
+            messuj = "Your old score is higher, you're still {0}".format(position)
             place = 10
         elif score > int(i[1]) and not written:
             leaderboard.insert(count,[name,score])
