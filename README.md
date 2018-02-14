@@ -2,9 +2,10 @@ To play Vertex, you must have Python 3 and Pygame installed.
 
 You can download Python 3 here: https://www.python.org/downloads/
 
-To install Pygame, run command prompt as administrator and enter this line:
+Once you've installed that, run command prompt as administrator and enter this line to install Pygame:
 
 py -m pip install pygame --user
 
+Then all you have to do is download the game files as a .zip, extract them to a folder, and run the Vertex.py file
 
-Once that's done, just download the game files as a .zip, extract them to a folder, and run the Vertex.py file
+Have thoughts to share? Respond to this survey: https://goo.gl/forms/L08DA46Tly11O2S73
