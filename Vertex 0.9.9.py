@@ -216,14 +216,15 @@ def start():
                 if event.key == pygame.K_F1:
                     infoBool = True
                     gameDisplay.fill(black)
-                    blitMessage("You are a diamond.",cyan,blue,displayWidth/2,displayHeight*0.15,72,False)
-                    blitMessage("You see a green flash.",white,magenta,displayWidth/2,displayHeight*0.3,48,False)
-                    blitMessage("You think 'yes'.",white,magenta,displayWidth/2,displayHeight*0.375,48,False)
-                    blitMessage("You run towards the green flash.",white,magenta,displayWidth/2,displayHeight*0.45,48,False)
-                    blitMessage("You see a red flash.",white,magenta,displayWidth/2,displayHeight*0.6,48,False)
-                    blitMessage("You think 'no'.",white,magenta,displayWidth/2,displayHeight*0.675,48,False)
-                    blitMessage("You run away from the red flash.",white,magenta,displayWidth/2,displayHeight*0.75,48,False)
-                    blitMessage("F1 TO CLOSE",white,magenta,displayWidth/2,displayHeight*0.9,36,False)
+                    blitMessage("You are a diamond.",cyan,blue,displayWidth/2,displayHeight*0.1,72,False)
+                    blitMessage("You see a green flash.",white,magenta,displayWidth/2,displayHeight*0.25,48,False)
+                    blitMessage("You think 'yes'.",white,magenta,displayWidth/2,displayHeight*0.325,48,False)
+                    blitMessage("You run towards the green flash.",white,magenta,displayWidth/2,displayHeight*0.4,48,False)
+                    blitMessage("You see a red flash.",white,magenta,displayWidth/2,displayHeight*0.55,48,False)
+                    blitMessage("You think 'no'.",white,magenta,displayWidth/2,displayHeight*0.625,48,False)
+                    blitMessage("You run away from the red flash.",white,magenta,displayWidth/2,displayHeight*0.7,48,False)
+                    blitMessage("Don't let the lifebar reach the bottom!",white,magenta,displayWidth/2,displayHeight*0.85,48,False)
+                    blitMessage("F1 TO CLOSE",green,magenta,displayWidth/2,displayHeight*0.95,36,False)
                     pygame.display.update()
                     while infoBool:
                         for event in pygame.event.get():
