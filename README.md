@@ -14,7 +14,8 @@ Then all you have to do is download the game files as a .zip, extract them to a 
 CONTROLS
 
 
-Arrow keys or WASD for movement and menu navigation
+Arrow keys or WASD for menu navigation + player movement
+
 Enter to select a menu option
 
 TESTING
