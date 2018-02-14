@@ -1,14 +1,10 @@
-VERTEX - Dance Dance Revolution for your fingers!
+To play Vertex, you must have Python 3 and Pygame installed.
 
-You are a diamond.
-You see a green flash.
-You think "yes".
-You run towards the green flash.
+You can download Python 3 here: https://www.python.org/downloads/
 
-You are a diamond.
-You see a red flash.
-You think "no".
-You run away from the red flash.
+To install Pygame, run command prompt as administrator and enter this line:
 
-You are a sentient diamond.
-And this is Vertex.
+py -m pip install pygame --user
+
+
+Once that's done, just download the game files as a .zip, extract them to a folder, and run the Vertex.py file
